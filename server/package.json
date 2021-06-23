@@ -1,0 +1,22 @@
+{
+  "name": "@planning-poker/server",
+  "version": "0.0.1",
+  "description": "planning poker socket server",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest",
+    "start:dev": "nodemon server.js"
+  },
+  "author": "Sandes de Silva",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "level": "^7.0.0",
+    "socket.io": "^4.1.2"
+  },
+  "devDependencies": {
+    "jest": "26.6.0",
+    "nodemon": "^2.0.7"
+  }
+}
