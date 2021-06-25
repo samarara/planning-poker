@@ -29,9 +29,9 @@ const Pie = ({ socket }) => {
 
   useEffect(() => {
     console.log("pie use effect data", data);
-    socket.on("update chart", (msg) => {
-      console.log("update chart", msg);
-      setData(msg);
+    socket.on("update chart", ({ questionId, newData }) => {
+      console.log("update chart", questionId, newData );
+      setData(newData);
     });
 
     // return () => {

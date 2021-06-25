@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import socketIoClient from "socket.io-client";
 import { makeStyles } from "@material-ui/core/styles";
 import ppImage from "../pplogo.svg";
@@ -33,17 +33,23 @@ const Home = ({ socket }) => {
   const history = useHistory();
   const [label, setLabel] = useState("");
   const [input, setInput] = useState("");
+
   // const [socket, setSocket] = useState({});
   // const [socket] = useState(socketIoClient(endpoint));
 
   const onCreateRoomClick = (socket) => () => {
-    console.log("on create room click")
-    socket.emit("create:room", socket.id);
-    history.push("/room");
+    console.log("on create room click");
+    socket.emit("create:room", { roomId: socket.id }, (response) => {
+      console.log("create:room cb", response)
+    });
+    socket.emit("question", { roomId: socket.id })
+    history.push(`/room/${socket.id}`);
   };
 
   const onJoinRoomClick = (socket, input) => () => {
-    socket.emit("join:room", input);
+    socket.emit("join:room", { roomId: input });
+    socket.emit("question", { roomId: input })
+    history.push(`/room/${input}`);
   };
 
   const onChange = (e) => {

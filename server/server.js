@@ -2,7 +2,14 @@ const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
-const { initialData, reduceData, resetData, addNewQuestion, getData } = require("./setData");
+const crypto = require("crypto");
+const {
+  initialData,
+  reduceData,
+  resetData,
+  addNewQuestion,
+  getData,
+} = require("./setData");
 const { createStore, writeToStore, closeStore } = require("./clients/level");
 
 const app = express();
@@ -18,7 +25,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 let dataStore;
-io.on("connection", async (socket) => {
+io.sockets.on("connection", async (socket) => {
   // setTimeout(() => socket.emit('message', { say: 'hello' }), 1000);
   // setTimeout(() => socket.emit("message", "hello i"), 1000);
 
@@ -44,45 +51,60 @@ io.on("connection", async (socket) => {
     console.log("message", msg);
   });
 
-  socket.on("create:room", (msg) => {
-    console.log("new room", msg);
-    socket.join(msg);
-    io.emit("question")
+  socket.on("create:room", ({ roomId }) => {
+    console.log("new room", roomId);
+    socket.join(roomId);
+    io.emit("question", { roomId });
   });
 
-  socket.on("question", async (msg) => {
-    console.log("new question", msg);
-    const newData = await addNewQuestion(dataStore, "test-question")
-    io.emit("update chart", newData);
-    io.emit("update grid", {});
+  socket.on("join:room", ({ roomId }) => {
+    console.log("join room", roomId);
+    socket.join(roomId);
+    io.to(roomId).emit("question", { roomId });
   });
 
-  socket.on("vote", async (msg) => {
-    console.log("vote", msg);
-    const newData = await reduceData(msg, "test-question", dataStore);
-    console.log("new data", newData)
-    console.log("updating chart", socket.emit)
-    io.emit("update chart", newData);
+  socket.on("question", async ({ roomId }) => {
+    console.log("new question", roomId);
+    const questionId = crypto.randomBytes(16).toString("hex");
+    const newData = await addNewQuestion(roomId, questionId, dataStore);
+    io.to(roomId).emit("get question", { roomId, questionId });
+    io.to(roomId).emit("update chart", { questionId, newData });
+    io.to(roomId).emit("update grid", { questionId });
+  });
+
+  socket.on("vote", async ({ roomId, vote, questionId }) => {
+    console.log("vote", vote, "roomId", roomId);
+    const newData = await reduceData(roomId, vote, "vote", questionId, dataStore);
+    console.log("new data", newData);
+    console.log("updating chart", socket.emit);
+    io.to(roomId).emit("update chart", { questionId, newData });
+  });
+
+  socket.on("unvote", async ({ roomId, previousVote, questionId }) => {
+    console.log("vote", previousVote, "roomId", roomId);
+    const newData = await reduceData(roomId, previousVote, "unvote", questionId, dataStore);
+    console.log("new data", newData);
+    console.log("updating chart", socket.emit);
+    io.to(roomId).emit("update chart", { questionId, newData });
   });
 
   socket.on("disconnect", async () => {
-    console.log("client disconnected")
+    console.log("client disconnected");
     console.log("closing db connection");
     await closeStore(dataStore);
   });
 
-  socket.on("get data", async (msg) => {
+  socket.on("get data", async ({ roomId, questionId }) => {
     console.log("getting data...");
-    const data = await getData(dataStore, msg);
-    io.emit("update chart", data);
+    const data = await getData(roomId, questionId, dataStore);
+    io.emit("update chart", { questionId, data });
   });
 });
-
 
 server.listen(port, async () => {
   try {
     dataStore = await createStore("pp-data");
-    console.log("datastore connected... initializing")
+    console.log("datastore connected... initializing");
     console.log(`Example app listening at http://localhost:${port}`);
     await closeStore(dataStore);
   } catch (err) {

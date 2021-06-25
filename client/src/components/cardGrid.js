@@ -1,7 +1,7 @@
 import { useState, useEffect, useLayoutEffect } from "react";
 import { Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useDidMountEffect, useDebounce } from "../hooks";
+import { useDidMountEffect, useDebounce, usePrevious } from "../hooks";
 import Card from "./card";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,32 +28,47 @@ const useStyles = makeStyles((theme) => ({
 
 const getRandomTimeout = () => Math.random() * (1000 - 2000) + 1000;
 
-const CardGrid = ({ socket }) => {
+const CardGrid = ({ socket, roomId }) => {
   const [vote, setVote] = useState(undefined);
+  const previousVote = usePrevious(vote);
+  // const debouncedVote = useDebounce(vote, 500);
+  // const debouncedPreviousVote = useDebounce(previousVote, 500)
+  const [questionId, setQuestionId] = useState(undefined);
   const [shouldReset, setShouldReset] = useState(false);
   const classes = useStyles();
-  const debouncedVote = useDebounce(vote, 500);
   // useEffect(() => {
   //   console.log(vote, previousVote);
   //   vote == previousVote ? setBgColour("white") : setBgColour("green");
   // }, [vote])
 
   useEffect(() => {
-    socket.on("update grid", () => {
-      console.log("resetging");
+    socket.on("update grid", ({ questionId }) => {
+      console.log("reseting");
       setShouldReset(true);
+      setQuestionId(questionId);
     });
-  }, [socket]);
+  }, [socket, questionId]);
 
   useDidMountEffect(() => {
     console.log("in card grid use effect");
-    socket.emit("vote", vote);
+    // if (previousVote !== undefined) {
+    //   console.log("unvoting", previousVote);
+    //   socket.emit("unvote", { roomId, previousVote, questionId });
+    // }
+    console.log("vote", vote, previousVote)
+    setTimeout(() => socket.emit("vote", { roomId, vote, questionId }), 300);
     // socket.emit("update chart")
     // return () => {
     //   console.log("in card grid cleanup");
     //   socket.close();
     // };
-  }, [socket, debouncedVote]);
+  }, [socket, vote]);
+
+  useDidMountEffect(() => {
+    if (previousVote !== undefined) {
+      setTimeout(() => socket.emit("unvote", { roomId, previousVote, questionId }), 500);
+    }
+  }, [socket, vote])
 
   const onClick = (event) => {
     const clickedVote = event.currentTarget.dataset.vote;

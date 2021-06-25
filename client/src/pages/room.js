@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Pie from "../components/pie";
 import CardGrid from "../components/cardGrid";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -19,12 +20,13 @@ const useStyles = makeStyles((theme) => ({
 
 const Room = ({ socket }) => {
   const classes = useStyles();
-  useEffect(() => {
-    socket.emit("get data", "test-question");
-  }, [socket]);
+  const { roomId } = useParams();
+  // useEffect(() => {
+  //   socket.emit("get data", { roomId, question: "test-question" });
+  // }, [socket]);
 
   const onClick = () => {
-    socket.emit("question", {});
+    socket.emit("question", { roomId });
   };
 
   // useEffect(() => {
@@ -47,8 +49,8 @@ const Room = ({ socket }) => {
           justifyContent="center"
           width="100%"
         >
-          <CardGrid socket={socket} />
-          <Pie socket={socket} />
+          <CardGrid socket={socket} roomId={roomId} />
+          <Pie socket={socket} roomId={roomId} />
         </Box>
         <Button variant="outlined" color="secondary" onClick={onClick}>
           {/* <Typography variant="h4"> */}
