@@ -2,13 +2,13 @@ const { getFromStore, writeToStore, closeStore } = require("./clients/level");
 
 const initialData = {
   0: {
-    id: "0 points",
+    id: "0",
     label: "0 points",
     value: 0,
   },
   0.5: {
     id: "1/2",
-    label: "1/2 point",
+    label: "1/2 points",
     value: 0,
   },
   1: {

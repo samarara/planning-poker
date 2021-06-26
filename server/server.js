@@ -1,28 +1,19 @@
 const express = require("express");
 const http = require("http");
-const cors = require("cors");
 const path = require("path");
 const { Server } = require("socket.io");
 const crypto = require("crypto");
-const {
-  initialData,
-  reduceData,
-  resetData,
-  addNewQuestion,
-  getData,
-} = require("./setData");
-const { createStore, writeToStore, closeStore } = require("./clients/level");
+const { reduceData, addNewQuestion, getData } = require("./setData");
+const { createStore, closeStore } = require("./clients/level");
 
 const app = express();
 const port = process.env.PORT || 8080;
 
-app.use("/", 
-  // res.sendFile(`${__dirname}/index.html`)
-  express.static(path.join(__dirname, "public"))
-);
+// serve react app
+app.use(express.static(path.join(__dirname, "public")));
 
+// set up socket.io
 const server = http.createServer(app);
-// const io = new Server(server, { cors: { origin: "http://localhost:3000" } });
 const io = new Server(server);
 
 let questionStore;
@@ -126,7 +117,12 @@ io.sockets.on("connection", async (socket) => {
   });
 });
 
-// gracefull shutdown
+// handle any other route by react router
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/public/index.html"));
+});
+
+// graceful shutdown
 const shutdownHandler = async (signal) => {
   console.log(`received ${signal}`);
   console.log("shutting down application");
@@ -143,6 +139,7 @@ const shutdownHandler = async (signal) => {
   }
 };
 
+// create repository and start server
 server.listen(port, async () => {
   try {
     questionStore = await createStore("pp-data");
