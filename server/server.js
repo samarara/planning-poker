@@ -1,6 +1,7 @@
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
+const path = require("path");
 const { Server } = require("socket.io");
 const crypto = require("crypto");
 const {
@@ -13,12 +14,12 @@ const {
 const { createStore, writeToStore, closeStore } = require("./clients/level");
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080;
 
-app.get("/api/v1", (req, res) => {
+app.use("/", 
   // res.sendFile(`${__dirname}/index.html`)
-  res.send("Hello from api!");
-});
+  express.static(path.join(__dirname, "public"))
+);
 
 const server = http.createServer(app);
 // const io = new Server(server, { cors: { origin: "http://localhost:3000" } });
