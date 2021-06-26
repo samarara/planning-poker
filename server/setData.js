@@ -2,49 +2,51 @@ const { getFromStore, writeToStore, closeStore } = require("./clients/level");
 
 const initialData = {
   0: {
-    id: "0",
-    label: "0",
+    id: "0 points",
+    label: "0 points",
     value: 0,
   },
   0.5: {
     id: "1/2",
-    label: "1/2",
+    label: "1/2 point",
     value: 0,
   },
   1: {
     id: "1",
-    label: "1",
+    label: "1 points",
     value: 0,
   },
   2: {
     id: "2",
-    label: "2",
+    label: "2 points",
     value: 0,
   },
   3: {
     id: "3",
-    label: "3",
+    label: "3 points",
     value: 0,
   },
   5: {
     id: "5",
-    label: "5",
+    label: "5 points",
     value: 0,
   },
   8: {
     id: "8",
-    label: "8",
+    label: "8 points",
     value: 0,
   },
   13: {
     id: "13",
-    label: "13",
+    label: "13 points",
     value: 0,
   },
 };
 
 const getAdjustedVote = (existingVoteDatum, voteOrUnvote) => {
-  if (voteOrUnvote === "unvote") {
+  if (voteOrUnvote === "unvote" && existingVoteDatum.value > 0
+  
+  ) {
     const newValue = (existingVoteDatum.value -= 1);
     return { ...existingVoteDatum, value: newValue };
   }

@@ -8,9 +8,16 @@ const useStyles = makeStyles((theme) => ({
     // flex: 2,
     display: "flex",
     justifyContent: "flex-end",
-    maxWidth: "40%",
-    maxHeight: "23em",
-    minHeight: "10em"
+    // maxWidth: "40em",
+    maxHeight: "40em",
+    minHeight: "10em",
+    margin: "0 2em",
+    flex: 1,
+  },
+  tooltip: {
+    backgroundColor: "#F3F4F6",
+    padding: "1em",
+    width: "1em",
   },
 }));
 
@@ -30,7 +37,7 @@ const Pie = ({ socket }) => {
   useEffect(() => {
     console.log("pie use effect data", data);
     socket.on("update chart", ({ questionId, newData }) => {
-      console.log("update chart", questionId, newData );
+      console.log("update chart", questionId, newData);
       setData(newData);
     });
 
@@ -48,7 +55,7 @@ const Pie = ({ socket }) => {
   const classes = useStyles();
   return (
     <Container className={classes.pie}>
-    {/* // <div classNames={classes.pie}> */}
+      {/* // <div classNames={classes.pie}> */}
       <ResponsivePie
         data={data}
         margin={{ top: 40, right: 140, bottom: 80, left: 80 }}
@@ -59,10 +66,13 @@ const Pie = ({ socket }) => {
         colors={{ scheme: "pastel1" }}
         borderWidth={1}
         borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+        arcLinkLabel={(d) => d.label}
+        enableArcLinkLabels={false}
         arcLinkLabelsSkipAngle={10}
         arcLinkLabelsTextColor="#333333"
         arcLinkLabelsThickness={2}
         arcLinkLabelsColor={{ from: "color" }}
+        arcLabel={(d) => `${d.id} (${d.value} votes)`}
         arcLabelsSkipAngle={10}
         arcLabelsTextColor={{ from: "color", modifiers: [["darker", 2]] }}
         defs={[
@@ -93,7 +103,7 @@ const Pie = ({ socket }) => {
             translateX: 120,
             translateY: 0,
             itemsSpacing: 0,
-            itemWidth: 40,
+            itemWidth: 75,
             itemHeight: 30,
             itemTextColor: "#999",
             itemDirection: "left-to-right",
@@ -110,8 +120,13 @@ const Pie = ({ socket }) => {
             ],
           },
         ]}
+        tooltip={({ datum: { data } }) => (
+          <span
+            className={classes.tooltip}
+          >{`${data.value} vote(s) for ${data.id} story points`}</span>
+        )}
       />
-    {/* // </div> */}
+      {/* // </div> */}
     </Container>
   );
 };

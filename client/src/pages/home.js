@@ -1,13 +1,7 @@
-import { useState, useEffect } from "react";
-import {
-  Container,
-  Button,
-  Box,
-  TextField,
-  Typography,
-} from "@material-ui/core";
-import { useHistory, useParams } from "react-router-dom";
-import socketIoClient from "socket.io-client";
+import { useEffect, useState } from "react";
+import { Container, Box, Typography } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+// import socketIoClient from "socket.io-client";
 import { makeStyles } from "@material-ui/core/styles";
 import ppImage from "../pplogo.svg";
 import ButtonGroup from "../components/buttonGroup";
@@ -28,28 +22,46 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Home = ({ socket }) => {
+const Home = ({ socket, setIsModerator }) => {
   const classes = useStyles();
   const history = useHistory();
   const [label, setLabel] = useState("");
   const [input, setInput] = useState("");
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Room id is required");
 
   // const [socket, setSocket] = useState({});
   // const [socket] = useState(socketIoClient(endpoint));
+  useEffect(() => {
+    setError(false);
+  }, [input])
 
   const onCreateRoomClick = (socket) => () => {
     console.log("on create room click");
     socket.emit("create:room", { roomId: socket.id }, (response) => {
-      console.log("create:room cb", response)
+      console.log("create:room cb", response);
     });
-    socket.emit("question", { roomId: socket.id })
+    // socket.emit("question", { roomId: socket.id })
+    // setIsModerator(true);
     history.push(`/room/${socket.id}`);
+    // history.push("/player");
   };
 
   const onJoinRoomClick = (socket, input) => () => {
-    socket.emit("join:room", { roomId: input });
-    socket.emit("question", { roomId: input })
-    history.push(`/room/${input}`);
+    if (input.length === 0) {
+      setError(true);
+    } else if (input.length < 10) {
+      setError(true);
+      setErrorMessage(
+        "That doesn't look right, please check with the moderator"
+      );
+    } else {
+      setError(false);
+      socket.emit("join:room", { roomId: input });
+      // socket.emit("question", { roomId: input })
+      history.push(`/room/${input}`);
+      // history.push("/player")
+    }
   };
 
   const onChange = (e) => {
@@ -64,7 +76,7 @@ const Home = ({ socket }) => {
         alignContent="center"
         alignItems="center"
       >
-        <img src={ppImage} alt="planning-poker-image" />
+        <img src={ppImage} alt="planning-poker" />
         <Typography variant="h1" className={classes.title}>
           Planning Poker
         </Typography>
@@ -73,6 +85,8 @@ const Home = ({ socket }) => {
           onJoinRoomClick={onJoinRoomClick(socket, input)}
           onChange={onChange}
           input={input}
+          error={error}
+          errorMessage={errorMessage}
         />
         {/* <h1>Planning Poker sdf</h1> */}
         {/* <div>{label}</div> */}

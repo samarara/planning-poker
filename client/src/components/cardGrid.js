@@ -9,12 +9,16 @@ const useStyles = makeStyles((theme) => ({
     // display: "flex",
     // flexWrap: "wrap",
     // flex: 3,
-    maxWidth: 737,
-    maxHeight: 602,
-    justifyContent: "flex-start",
+    margin: 0,
+    // maxWidth: "51em",
+    // maxHeight: 602,
+    minHeight: "40em",
     backgroundColor: "#F3F4F6",
     justifyContent: "center",
+    alignItems: "center",
     padding: "3%",
+    flex: 1,
+    // minWidth: 700,
     // "& > *": {
     //   margin: theme.spacing(1),
     //   width: theme.spacing(20),
@@ -22,8 +26,8 @@ const useStyles = makeStyles((theme) => ({
     // },
   },
   title: {
-    width: "100%"
-  }
+    width: "100%",
+  },
 }));
 
 const getRandomTimeout = () => Math.random() * (1000 - 2000) + 1000;
@@ -46,6 +50,8 @@ const CardGrid = ({ socket, roomId }) => {
       console.log("reseting");
       setShouldReset(true);
       setQuestionId(questionId);
+      setVote(undefined);
+      // setShouldReset(false);
     });
   }, [socket, questionId]);
 
@@ -55,8 +61,21 @@ const CardGrid = ({ socket, roomId }) => {
     //   console.log("unvoting", previousVote);
     //   socket.emit("unvote", { roomId, previousVote, questionId });
     // }
-    console.log("vote", vote, previousVote)
-    setTimeout(() => socket.emit("vote", { roomId, vote, questionId }), 300);
+    console.log("vote", vote, previousVote);
+    if (vote !== undefined) {
+      setTimeout(
+        () =>
+          socket.emit("vote", { roomId, vote, questionId }, ({ status }) => {
+            if (previousVote !== undefined && status === "ok") {
+              console.log(status);
+              console.log("unvote", vote, previousVote);
+              socket.emit("unvote", { roomId, previousVote, questionId });
+              // setTimeout(() => socket.emit("unvote", { roomId, previousVote, questionId }), 300);
+            }
+          }),
+        300
+      );
+    }
     // socket.emit("update chart")
     // return () => {
     //   console.log("in card grid cleanup");
@@ -64,11 +83,11 @@ const CardGrid = ({ socket, roomId }) => {
     // };
   }, [socket, vote]);
 
-  useDidMountEffect(() => {
-    if (previousVote !== undefined) {
-      setTimeout(() => socket.emit("unvote", { roomId, previousVote, questionId }), 500);
-    }
-  }, [socket, vote])
+  // useDidMountEffect(() => {
+  //   if (previousVote !== undefined) {
+  //     setTimeout(() => socket.emit("unvote", { roomId, previousVote, questionId }), 500);
+  //   }
+  // }, [socket, vote])
 
   const onClick = (event) => {
     const clickedVote = event.currentTarget.dataset.vote;
@@ -77,12 +96,12 @@ const CardGrid = ({ socket, roomId }) => {
   };
 
   return (
-    <Grid container spacing={2} className={classes.cardGrid}>
-      <Grid item className={classes.title}>
+    <Grid container spacing={5} className={classes.cardGrid}>
+      {/* <Grid item   className={classes.title}>
         <Typography variant="h3">
           Sandes's Room
         </Typography>
-      </Grid>
+      </Grid> */}
       <Grid item>
         <Card
           growDuration={getRandomTimeout()}

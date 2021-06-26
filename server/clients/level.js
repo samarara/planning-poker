@@ -1,4 +1,4 @@
-const level = require("level");
+const level = require("level-mem");
 
 const createStore = async (name) => {
   // console.log("here", level())

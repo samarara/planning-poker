@@ -7,6 +7,7 @@ import "./App.css";
 const App = () => {
   // const [socket] = useState(socketIoClient("/"));
   const [socket, setSocket] = useState(undefined);
+  // const [isModerator, setIsModerator] = useState(false);
 
   useEffect(() => {
     const sock = socketIoClient("/");
@@ -14,7 +15,13 @@ const App = () => {
   }, []);
 
   if (socket) {
-    return <Routes socket={socket} />;
+    return (
+      <Routes
+        socket={socket}
+        // isModerator={isModerator}
+        // setIsModerator={setIsModerator}
+      />
+    );
   }
   return <Skeleton animation="wave" width={500} length={500} />;
 };

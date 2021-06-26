@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   buttonGroup: {
-    width: "40%",
+    width: "20em",
   },
   button: {
     margin: "8% 0",
@@ -11,10 +11,16 @@ const useStyles = makeStyles((theme) => ({
   firstButton: {
     margin: "25% 0",
   },
-
 }));
 
-const ButtonGroup = ({ onCreateRoomClick, onJoinRoomClick, onChange, input }) => {
+const ButtonGroup = ({
+  onCreateRoomClick,
+  onJoinRoomClick,
+  onChange,
+  input,
+  error,
+  errorMessage,
+}) => {
   const classes = useStyles();
   return (
     <div id="button group" className={classes.buttonGroup}>
@@ -27,7 +33,24 @@ const ButtonGroup = ({ onCreateRoomClick, onJoinRoomClick, onChange, input }) =>
       >
         Create new voting room
       </Button>
-      <TextField label="Enter room code" fullWidth={true} onChange={onChange}>{input}</TextField>
+      <TextField
+        label="Enter room code"
+        variant="outlined"
+        fullWidth={true}
+        onChange={onChange}
+        required
+        error={error}
+        helperText={error ? errorMessage : ''}
+      >
+        {input}
+      </TextField>
+      {/* <TextField
+          error
+          id="standard-error-helper-text"
+          label="Error"
+          defaultValue="Hello World"
+          helperText="Incorrect entry."
+        /> */}
       <Button
         variant="contained"
         color="default"

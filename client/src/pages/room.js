@@ -7,14 +7,35 @@ import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    position: "relative",
-    width: "100%",
-    height: "100%",
+    // position: "relative",
+    // width: "100%",
+    // height: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    maxWidth: "100%",
+    maxWidth: "94%",
+    // margin: "3em auto",
+  },
+  title: {
+    fontWeight: 200,
+    margin: "1em",
+    flex: 1,
+    marginLeft: 0,
+  },
+  subTitle: {
+    fontWeight: 300,
+    margin: "1em",
+    flex: 1,
+    marginRight: 0,
+    textAlign: "right",
+  },
+  button: {
+    margin: "4em auto",
+    width: "20em",
+  },
+  roomId: {
+    fontWeight: 400,
   },
 }));
 
@@ -24,6 +45,16 @@ const Room = ({ socket }) => {
   // useEffect(() => {
   //   socket.emit("get data", { roomId, question: "test-question" });
   // }, [socket]);
+
+  // on load need to get data
+  // if someone go straight to the link
+  // instead of through the home page
+
+  useEffect(() => {
+    console.log("in use effect in room", roomId);
+    socket.emit("join:room", { roomId });
+    socket.emit("question", { roomId });
+  }, [socket, roomId]);
 
   const onClick = () => {
     socket.emit("question", { roomId });
@@ -41,18 +72,62 @@ const Room = ({ socket }) => {
   return (
     // <Container maxWidth="xlg">
     <>
-      <Container maxWidth="lg" className={classes.container}>
-        <Box
+      <Container className={classes.container}>
+        {/* <Box
           display="flex"
           flexDirection="row"
+          flexWrap="wrap"
+          justifyContent="space-evenly"
+          alignItems="center"
+          width="100%"
+        >
+          <Typography variant="h2" className={classes.title}>
+            Let's vote
+          </Typography>
+          <Typography variant="h5" className={classes.title}>
+            Share this room code with your team mates: {roomId}
+          </Typography>
+        </Box> */}
+        <Box
+          display="flex"
+          flexDirection="column"
           flexWrap="wrap"
           justifyContent="center"
           width="100%"
         >
-          <CardGrid socket={socket} roomId={roomId} />
-          <Pie socket={socket} roomId={roomId} />
+          <Box
+            display="flex"
+            flexDirection="row"
+            flexWrap="wrap"
+            justifyContent="space-evenly"
+            alignItems="center"
+            width="100%"
+          >
+            <Typography variant="h2" className={classes.title}>
+              Let's vote
+            </Typography>
+            <Typography variant="h5" className={classes.subTitle}>
+              Share this room code with your team mates:{" "}
+              <span className={classes.roomId}>{roomId}</span>
+            </Typography>
+          </Box>
+          <Box
+            display="flex"
+            flexDirection="row"
+            flexWrap="wrap"
+            justifyContent="space-evenly"
+            width="100%"
+          >
+            <CardGrid socket={socket} roomId={roomId} />
+            <Pie socket={socket} roomId={roomId} />
+          </Box>
         </Box>
-        <Button variant="outlined" color="secondary" onClick={onClick}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={onClick}
+          className={classes.button}
+        >
           {/* <Typography variant="h4"> */}
           New Poll
           {/* </Typography> */}
