@@ -22,3 +22,4 @@ yarn-error.log*
 #file db
 server/pp-data
 server/build
+server/public

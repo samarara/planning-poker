@@ -4,16 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "lerna bootstrap -- --production && lerna run build && lerna --help",
+    "build:local": "rimraf server/public && lerna clean -y && lerna bootstrap && lerna run build && cp -R client/build server/public"
   },
   "keywords": [],
   "author": "Sandes de Silva",
   "license": "ISC",
   "devDependencies": {
-    "lerna": "^4.0.0"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "socket.io": "^4.1.2"
+    "lerna": "^4.0.0",
+    "rimraf": "^3.0.2"
   }
 }

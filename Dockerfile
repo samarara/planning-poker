@@ -3,9 +3,8 @@ ARG PORT
 
 COPY . .
 
-RUN npm i -g lerna
-RUN lerna bootstrap -- --production
-RUN lerna run build
+RUN npm install
+RUN npm run build
 
 FROM build AS release
 
