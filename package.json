@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "start": "lerna run start:dev", 
     "build": "lerna bootstrap -- --production && lerna run build && lerna --help",
     "build:local": "rimraf server/public && lerna clean -y && lerna bootstrap && lerna run build && cp -R client/build server/public"
   },

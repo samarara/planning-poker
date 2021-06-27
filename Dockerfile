@@ -1,5 +1,4 @@
 FROM node:12-slim AS build
-ARG PORT
 
 COPY . .
 
