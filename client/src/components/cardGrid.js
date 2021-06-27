@@ -18,6 +18,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     padding: "3%",
     flex: 1,
+    [theme.breakpoints.down("sm")]: {
+      flex: "unset",
+    },
+    [theme.breakpoints.down("xs")]: {
+      minHeight: "unset",
+    },
     // minWidth: 700,
     // "& > *": {
     //   margin: theme.spacing(1),

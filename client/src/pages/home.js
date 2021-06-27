@@ -9,16 +9,25 @@ import ButtonGroup from "../components/buttonGroup";
 const endpoint = "/";
 const useStyles = makeStyles((theme) => ({
   container: {
-    position: "fixed",
-    width: "100%",
-    height: "100%",
+    // position: "fixed",
+    // width: "100%",
+    // height: "100%",
+    // display: "flex",
+    // justifyContent: "center",
+    // alignItems: "center",
+    // maxWidth: "100%",
     display: "flex",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    maxWidth: "100%",
+    maxWidth: "94%",
+    margin: "2em auto"
   },
   title: {
     fontWeight: "100",
+  },
+  image: {
+    margin: "2em",
   },
 }));
 
@@ -34,7 +43,7 @@ const Home = ({ socket, setIsModerator }) => {
   // const [socket] = useState(socketIoClient(endpoint));
   useEffect(() => {
     setError(false);
-  }, [input])
+  }, [input]);
 
   const onCreateRoomClick = (socket) => () => {
     console.log("on create room click");
@@ -69,14 +78,14 @@ const Home = ({ socket, setIsModerator }) => {
   };
 
   return (
-    <Container maxWidth="lg" className={classes.container}>
+    <Container className={classes.container}>
       <Box
         display="flex"
         flexDirection="column"
         alignContent="center"
         alignItems="center"
       >
-        <img src={ppImage} alt="planning-poker" />
+        <img src={ppImage} alt="planning-poker" className={classes.image} />
         <Typography variant="h1" className={classes.title}>
           Planning Poker
         </Typography>

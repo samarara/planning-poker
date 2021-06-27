@@ -22,6 +22,12 @@ const useStyles = makeStyles((theme) => ({
     margin: "1em",
     flex: 1,
     marginLeft: 0,
+    [theme.breakpoints.down("sm")]: {
+      flex: "unset",
+      textAlign: "center",
+      marginLeft: "1em",
+      fontSize: "2.75rem",
+    },
   },
   subTitle: {
     fontWeight: 300,
@@ -29,6 +35,11 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     marginRight: 0,
     textAlign: "right",
+    [theme.breakpoints.down("sm")]: {
+      flex: "unset",
+      textAlign: "center",
+      fontSize: "1.2rem",
+    },
   },
   button: {
     margin: "4em auto",

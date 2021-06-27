@@ -24,13 +24,22 @@ const useStyles = (bgColour, hoverColour) =>
         easing: theme.transitions.easing.easeInOut,
       }),
       height: 176,
-      width: 145
+      width: 145,
+      [theme.breakpoints.down("xs")]: {
+        height: 88,
+        width: 72.5,
+      },
     },
     grow: {
       transition: theme.transitions.create(["background-color"], {
         duration: "0.5s",
         easing: theme.transitions.easing.easeInOut,
       }),
+    },
+    typography: {
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "2.75rem",
+      },
     },
   }));
 
@@ -50,12 +59,12 @@ const Card = ({ children, growDuration, data, onClick, vote, shouldReset }) => {
   }, [vote, data]);
 
   useEffect(() => {
-    console.log("should reset", shouldReset)
-    if(shouldReset) {
+    console.log("should reset", shouldReset);
+    if (shouldReset) {
       setBgColour("white");
       setHoverColour("#ce53ae24");
     }
-  }, [shouldReset])
+  }, [shouldReset]);
 
   return (
     <Grow
@@ -63,19 +72,20 @@ const Card = ({ children, growDuration, data, onClick, vote, shouldReset }) => {
       timeout={growDuration}
       style={{
         transformOrigin: "0 0 0",
-        transition: "background-color 0.5s ease"
+        transition: "background-color 0.5s ease",
       }}
       mountOnEnter
       unmountOnExit
-
     >
       <Paper
         elevation={3}
         className={classes.card}
-        data-vote={data}
+        data-vote={data}s
         onClick={onClick}
       >
-        <Typography variant="h2">{children}</Typography>
+        <Typography variant="h2" className={classes.typography}>
+          {children}
+        </Typography>
       </Paper>
     </Grow>
   );

@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "10em",
     margin: "0 2em",
     flex: 1,
+    [theme.breakpoints.down("sm")]: {
+      flex: "unset",
+    },
   },
   tooltip: {
     backgroundColor: "#F3F4F6",
