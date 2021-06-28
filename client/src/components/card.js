@@ -2,11 +2,6 @@ import { useEffect, useState } from "react";
 import { Paper, Typography, Grow } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-// opacity: 1;
-// transform: none;
-// transform-origin: 0px 0px 0px;
-// transition: opacity 78ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 52ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-
 const useStyles = (bgColour, hoverColour) =>
   makeStyles((theme) => ({
     card: {
@@ -80,7 +75,7 @@ const Card = ({ children, growDuration, data, onClick, vote, shouldReset }) => {
       <Paper
         elevation={3}
         className={classes.card}
-        data-vote={data}s
+        data-vote={data}
         onClick={onClick}
       >
         <Typography variant="h2" className={classes.typography}>

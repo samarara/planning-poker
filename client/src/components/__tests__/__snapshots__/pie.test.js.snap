@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pie chart should match snapshot 1`] = `
+<div
+  className="MuiContainer-root makeStyles-pie-1 MuiContainer-maxWidthLg"
+>
+  <div
+    style={
+      Object {
+        "height": "100%",
+        "width": "100%",
+      }
+    }
+  />
+</div>
+`;

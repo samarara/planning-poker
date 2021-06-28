@@ -36,8 +36,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const getRandomTimeout = () => Math.random() * (1000 - 2000) + 1000;
-
 const CardGrid = ({ socket, roomId }) => {
   const [vote, setVote] = useState(undefined);
   const previousVote = usePrevious(vote);
@@ -46,6 +44,7 @@ const CardGrid = ({ socket, roomId }) => {
   const [questionId, setQuestionId] = useState(undefined);
   const [shouldReset, setShouldReset] = useState(false);
   const classes = useStyles();
+  const getRandomTimeout = () => Math.random() * (1000 - 2000) + 1000;
   // useEffect(() => {
   //   console.log(vote, previousVote);
   //   vote == previousVote ? setBgColour("white") : setBgColour("green");
