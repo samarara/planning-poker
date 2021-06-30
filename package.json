@@ -8,7 +8,8 @@
     "start": "lerna run start:dev", 
     "bootstrap": "lerna bootstrap",
     "build": "lerna bootstrap -- --production && lerna run build",
-    "build:local": "rimraf server/public && lerna clean -y && lerna bootstrap && lerna run build && cp -R client/build server/public"
+    "build:local": "rimraf server/public && lerna clean -y && lerna bootstrap && lerna run build && cp -R client/build server/public",
+    "start:server": "lerna run start --scope @planning-poker/server"
   },
   "keywords": [],
   "author": "Sandes de Silva",
