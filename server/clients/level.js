@@ -1,8 +1,6 @@
 const level = require("level-mem");
 
 const createStore = async (name) => {
-  // console.log("here", level())
-  // return await level(name);
   return await level(name, {
     createIfMissing: true,
     valueEncoding: "json",

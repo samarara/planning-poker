@@ -44,9 +44,7 @@ const initialData = {
 };
 
 const getAdjustedVote = (existingVoteDatum, voteOrUnvote) => {
-  if (voteOrUnvote === "unvote" && existingVoteDatum.value > 0
-  
-  ) {
+  if (voteOrUnvote === "unvote" && existingVoteDatum.value > 0) {
     const newValue = (existingVoteDatum.value -= 1);
     return { ...existingVoteDatum, value: newValue };
   }
@@ -54,44 +52,17 @@ const getAdjustedVote = (existingVoteDatum, voteOrUnvote) => {
   return { ...existingVoteDatum, value: newValue };
 };
 
-const reduceData = async (
-  roomId,
-  vote,
-  category,
-  // newVote,
-  // previousVote,
-  question,
-  dataStore
-) => {
+const reduceData = async (roomId, vote, category, question, dataStore) => {
   try {
     const roomData = await getFromStore(dataStore, roomId);
-    // console.log("existing data", roomData);
     const questionData = roomData[question];
-
-    // const existingVoteDatum = questionData[newVote];
-    // const newValue = (existingVoteDatum.value += 1);
-    // const newVoteDatum = { ...existingVoteDatum, value: newValue };
-
-    // const existingPreviousVoteDatum = questionData[previousVote];
-    // const previousValue = (previousVote.value -= 1);
-    // const previousVoteDatum = {
-    //   ...existingPreviousVoteDatum,
-    //   value: previousValue,
-    // };
 
     const newVoteDatum = getAdjustedVote(questionData[vote], category);
     const newQuestionData = { ...questionData, [vote]: newVoteDatum };
     console.log("existing data", roomData, "new data", newQuestionData);
 
-    // const newQuestionData = {
-    //   ...questionData,
-    //   [newVote]: newVoteDatum,
-    //   [previousVote]: previousVoteDatum,
-    // };
-
     const newRoomData = { ...roomData, [question]: newQuestionData };
-    // console.log("new data in reducer", newRoomData);
-    // console.log("new question data", newQuestionData);
+
     await writeToStore(dataStore, roomId, newRoomData);
     await closeStore(dataStore);
     return Object.values(newQuestionData);
@@ -99,14 +70,6 @@ const reduceData = async (
     console.error("Unable to write data", err);
     await closeStore(dataStore);
   }
-  // const newData = await getFromStore(question)ff
-  //   .filter((datum) => datum.id === newVote)
-  //   .map((datum) => {
-  //     const newValue = (datum.value += 1);
-  //     return { ...datum, value: newValue };
-  //   });
-  // console.log("server", [...data, ...newData]);
-  // return Array.from(new Set([...data, ...newData]));
 };
 
 const addNewQuestion = async (roomId, question, dataStore) => {
@@ -134,8 +97,6 @@ const getData = async (roomId, question, dataStore) => {
     await closeStore(dataStore);
   }
 };
-
-const jsonfiyData = (data) => JSON.stringify(data);
 
 const resetData = () => initialData;
 

@@ -19,27 +19,10 @@ const io = new Server(server);
 let questionStore;
 let playerStore;
 io.sockets.on("connection", async (socket) => {
-  // setTimeout(() => socket.emit('message', { say: 'hello' }), 1000);
-  // setTimeout(() => socket.emit("message", "hello i"), 1000);
 
   console.log(socket.id, socket.rooms);
   console.log("connected");
 
-  // try {
-  //   // dataStore = await createStore("pp-data");
-  //   // console.log("datastore connected... initializing")
-  //   console.log(socket.id, socket.rooms);
-  //   console.log("connected");
-  //   // await closeStore(dataStore);
-  //   // console.log("adding new question")
-  //   // await addNewQuestion(dataStore, "test-question")
-  // } catch(err) {
-  //   console.error("unable to create data store; exiting...");
-  //   io.close();
-  //   server.close();
-  //   process.exit(1);
-  // }
-  // await writeToStore(dataStore, "test-question", initialData);
   socket.on("message", (msg) => {
     console.log("message", msg);
   });
@@ -158,6 +141,3 @@ server.listen(port, async () => {
 process.on("SIGTERM", shutdownHandler);
 process.on("SIGINT", shutdownHandler);
 
-// process.on("SIGINT", () => {
-//   console.log("sig int received");
-// })

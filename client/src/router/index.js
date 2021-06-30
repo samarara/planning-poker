@@ -3,13 +3,11 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  useParams,
 } from "react-router-dom";
 import { Home, Room } from "../pages";
-import Player from "../pages/player";
+// import Player from "../pages/player";
 
 const Routes = ({ socket, isModerator, setIsModerator }) => {
-  // const { roomId } = useParams();
   return (
     <Router>
       <Switch>

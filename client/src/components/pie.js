@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Container, Box } from "@material-ui/core";
+import { Container } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { ResponsivePie } from "@nivo/pie";
 
@@ -33,10 +33,6 @@ const Pie = ({ socket }) => {
     },
   ]);
 
-  // useEffect(() => {
-  //   socket.emit("get data", "test-question");
-  // }, [])
-
   useEffect(() => {
     console.log("pie use effect data", data);
     socket.on("update chart", ({ questionId, newData }) => {
@@ -44,21 +40,11 @@ const Pie = ({ socket }) => {
       setData(newData);
     });
 
-    // return () => {
-    //   console.log("in pie cleanup");
-    //   socket.close();
-    // };
   }, [socket, data]);
-
-  // socket.on("update chart", (msg) => {
-  //   console.log("update chart", msg);
-  //   setData(msg);
-  // });
 
   const classes = useStyles();
   return (
     <Container className={classes.pie}>
-      {/* // <div classNames={classes.pie}> */}
       <ResponsivePie
         data={data}
         margin={{ top: 40, right: 140, bottom: 80, left: 80 }}
@@ -129,7 +115,6 @@ const Pie = ({ socket }) => {
           >{`${data.value} vote(s) for ${data.id} story points`}</span>
         )}
       />
-      {/* // </div> */}
     </Container>
   );
 };
