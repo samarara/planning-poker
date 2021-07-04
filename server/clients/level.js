@@ -22,6 +22,25 @@ const getFromStore = async (store, key) => {
   return results;
 };
 
+const doesKeyExist = async (store, key) => {
+  await store.open();
+  try {
+    await store.get(key);
+    return true;
+  } catch (err) {
+    if (
+      err.type === "NotFoundError" &&
+      err.message.includes("Key not found in database")
+    ) {
+      return false;
+    } else {
+      throw err;
+    }
+  } finally {
+    store.close();
+  }
+};
+
 const closeStore = async (store) => {
   await store.close();
 };
@@ -30,5 +49,6 @@ module.exports = {
   createStore,
   writeToStore,
   getFromStore,
+  doesKeyExist,
   closeStore,
 };

@@ -1,4 +1,9 @@
-const { getFromStore, writeToStore, closeStore } = require("./clients/level");
+const {
+  getFromStore,
+  writeToStore,
+  closeStore,
+  doesKeyExist,
+} = require("./clients/level");
 
 const initialData = {
   0: {
@@ -46,9 +51,11 @@ const initialData = {
 const getAdjustedVote = (existingVoteDatum, voteOrUnvote) => {
   if (voteOrUnvote === "unvote" && existingVoteDatum.value > 0) {
     const newValue = (existingVoteDatum.value -= 1);
+    console.log("unvote", { ...existingVoteDatum, value: newValue });
     return { ...existingVoteDatum, value: newValue };
   }
   const newValue = (existingVoteDatum.value += 1);
+  console.log("vote new value", { ...existingVoteDatum, value: newValue });
   return { ...existingVoteDatum, value: newValue };
 };
 
@@ -62,7 +69,6 @@ const reduceData = async (roomId, vote, category, question, dataStore) => {
     console.log("existing data", roomData, "new data", newQuestionData);
 
     const newRoomData = { ...roomData, [question]: newQuestionData };
-
     await writeToStore(dataStore, roomId, newRoomData);
     await closeStore(dataStore);
     return Object.values(newQuestionData);
@@ -72,16 +78,44 @@ const reduceData = async (roomId, vote, category, question, dataStore) => {
   }
 };
 
+// const addNewQuestion = async (roomId, question, dataStore) => {
+//   try {
+//     const existingData = await getFromStore(dataStore, roomId);
+//     // if (existingData === undefined) {
+//     //   await writeToStore(dataStore, roomId, { [question]: initialData });
+//     // }
+//     await writeToStore(dataStore, roomId, { ...existingData, [question]: initialData });
+//     await closeStore(dataStore);
+//     console.log(existingData);
+//     // return Object.values(initialData);
+//   } catch (err) {
+//     console.error("unable to add new question", err, err.message, err.type);
+//     await writeToStore(dataStore, roomId, { [question]: initialData });
+//     await closeStore(dataStore);
+//   } finally {
+//     return Object.values(initialData);
+//   }
+// };
+
 const addNewQuestion = async (roomId, question, dataStore) => {
   try {
-    await writeToStore(dataStore, roomId, { [question]: initialData });
-    const existingData = await getFromStore(dataStore, roomId);
+    const _doesKeyExist = await doesKeyExist(dataStore, roomId);
+    if (!_doesKeyExist) {
+      await writeToStore(dataStore, roomId, { [question]: initialData });
+    } else {
+      const existingData = await getFromStore(dataStore, roomId);
+      await writeToStore(dataStore, roomId, {
+        ...existingData,
+        [question]: initialData,
+      });
+      console.log(existingData);
+    }
     await closeStore(dataStore);
-    console.log(existingData);
-    return Object.values(initialData);
   } catch (err) {
-    console.error("unable to add new question", err);
+    console.error("unable to add new question", err, err.message, err.type);
     await closeStore(dataStore);
+  } finally {
+    return Object.values(initialData);
   }
 };
 
